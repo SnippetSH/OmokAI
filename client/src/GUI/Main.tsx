@@ -13,7 +13,7 @@ export default function Main({ setWB }: { setWB: (x: boolean) => void }) {
     <div className="w-full h-full flex flex-col justify-center items-center relative">
       <div className="absolute top-3 right-5">
         <button>
-          <a className="flex items-center" href="https://github.com/SnippetSH/Calculator.git">
+          <a className="flex items-center" href="https://github.com/SnippetSH/OmokAI.git">
             <img src={github} width={'40px'} className="rounded-full mx-3"/>
             <h1 className="text-2xl pt-1 text-white text-center newfont"> SnippetSH.io </h1>
           </a>
