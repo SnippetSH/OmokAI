@@ -4,11 +4,11 @@ just choose Black or White,
 
 The AI will play with you.
 
-##Client
+## Client
 client is built from vite+react+ts
 
-##Server
+## Server
 server is built from python flask
 
-###Model
+### Model
 I made model with CNN from Tensorflow and Keras 2.15.0
