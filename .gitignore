@@ -1,0 +1,4 @@
+/server/dist
+/server/__pycache__
+/server/text.py
+/node_modules
