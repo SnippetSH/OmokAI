@@ -1,16 +1,31 @@
 import { useNavigate } from "react-router-dom"
+import { useState, useEffect } from "react";
 import github from '../assets/github_logo.png';
 import '../index.css';
 
 export default function Main({ setWB }: { setWB: (x: boolean) => void }) {
   const navigate = useNavigate();
+  const [warning, setWarning] = useState(false);
   const NavAndsetWB = (x: boolean) => {
     setWB(x)
     navigate('/board')
   }
 
+  useEffect(() => {
+    if (window.innerWidth <= 900) {
+      setWarning(true)
+    }
+  }, [])
+
   return (
     <div className="w-full h-full flex flex-col justify-center items-center relative">
+      {
+        warning ?
+          <div className='text-white absolute top-16 left-1/2 transform -translate-x-1/2 w-1/3 bg-red-300/75 p-2 rounded-lg'>
+            <h1 className='text-lg text-center onefont text-stroke text-pretty break-keep'>주의: 화면 가로 크기가 너무 작을 경우 게임이 올바르게 동작하지 않을 수 있습니다.</h1>
+            <p className='text-xs text-center mt-3 onefont s-text-stroke text-pretty'>화면 크기에 따른 버그 제보의 경우, gccs457@naver.com으로 제보해주세요.</p>
+          </div> : null
+      }
       <div className="absolute top-3 right-5">
         <button>
           <a className="flex items-center" href="https://github.com/SnippetSH/OmokAI.git">

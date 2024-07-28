@@ -28,6 +28,14 @@
     font-style: normal;
 }
 
+.text-stroke {
+    -webkit-text-stroke: 0.5px black;
+}
+
+.s-text-stroke {
+    -webkit-text-stroke: 0.1px black;
+}
+
 .newfont {
     font-family: 'SuperSunday';
 }
@@ -42,4 +50,26 @@
 
 .yangfont {
     font-family: 'yang';
+}
+
+@media (max-width: 1280px) {
+    .info-panel {
+        top: auto;
+        left: auto;
+        margin-top: 1rem; /* canvas 아래 여백 조절 */
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        width: 75%;
+    }
+
+    .cur-p {
+        padding-top: 0.5rem;
+        padding-bottom: 0.5rem;
+    }
+
+    canvas {
+        margin-top: 1rem; /* 필요에 따라 조정 */
+    }
 }

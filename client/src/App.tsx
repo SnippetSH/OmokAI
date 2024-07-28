@@ -12,9 +12,9 @@ function App() {
   }
 
   return (
-    <div className='w-screen h-screen bg-dark-indigo'>
+    <div className='w-screen h-screen bg-dark-indigo relative'>
       <Routes>
-        <Route path='/' element={<Main setWB={setBlackorWhite} />}/>
+        <Route path='/' element={<Main setWB={setBlackorWhite} />} />
         <Route path='/board' element={<Board WB={WB} />} />
       </Routes>
     </div>

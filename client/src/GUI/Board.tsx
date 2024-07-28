@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { is33, is44, isWin } from '../API/CurCheckAPI';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { v4 as uuidv4 } from 'uuid';
 import '../index.css';
 
 type Stone = "Black" | "White" | null;
@@ -17,6 +18,23 @@ export default function Board({ WB }: { WB: boolean }) {
     Array(boardSize).fill(0).map(() => Array(boardSize).fill(0))
   ); // 1: black, 0: none, -1: white
   const [win, setWin] = useState<Stone>(null);
+  const [sessionID] = useState(uuidv4());
+
+  useEffect(() => {
+    console.log("Your session ID:", sessionID);
+
+    return () => {
+      console.log('Ending session ID:', sessionID);
+
+      axios.post('/api/ai-reset', { session_id: sessionID })
+        .then(res => {
+          console.log('Session End:', res.data);
+        })
+        .catch(e => {
+          console.log("Error ending session:", e);
+        }) 
+    }
+  }, [sessionID]);
 
   const nav = useNavigate();
   useEffect(() => {
@@ -78,7 +96,14 @@ export default function Board({ WB }: { WB: boolean }) {
     setWin(null);
     if (canvasRef.current) {
       canv = canvasRef.current;
-      canv.width = window.innerWidth * 0.5;
+      if(window.innerWidth > 1280) {
+        canv.width = window.innerWidth * 0.5;
+      } else {
+        if(window.innerWidth > window.innerHeight) {
+          canv.width = window.innerHeight * 0.8;
+        }
+        canv.width = window.innerWidth * 0.8;
+      }
       canv.height = canv.width;
       setCanvTag(canv);
       setGameSize(canv.width - canv_mg * 2);
@@ -94,7 +119,8 @@ export default function Board({ WB }: { WB: boolean }) {
         const res = await axios.get('/api/ai-move',
           {
             params: {
-              board: JSON.stringify(board)
+              board: JSON.stringify(board),
+              session_id: sessionID
             }
           }
         )
@@ -161,6 +187,11 @@ export default function Board({ WB }: { WB: boolean }) {
       if (x > boardSize) x = boardSize;
       if (y > boardSize) y = boardSize;
 
+      if(window.innerWidth <= 751) {
+        x-=1;
+        y-=1;
+      }
+
       //console.log("x:", x, "\ny:", y);
       //console.log(board[y][x])
       const tmpBoard = board.map(v => [...v]);
@@ -207,7 +238,8 @@ export default function Board({ WB }: { WB: boolean }) {
           const res = await axios.get('/api/ai-move',
             {
               params: {
-                board: JSON.stringify(board)
+                board: JSON.stringify(board),
+                session_id: sessionID
               }
             }
           )
@@ -223,7 +255,8 @@ export default function Board({ WB }: { WB: boolean }) {
           const res = await axios.get('/api/ai-move',
             {
               params: {
-                board: JSON.stringify(board)
+                board: JSON.stringify(board),
+                session_id: sessionID
               }
             }
           )
@@ -281,7 +314,8 @@ export default function Board({ WB }: { WB: boolean }) {
               const res = await axios.get('/api/ai-move',
                 {
                   params: {
-                    board: JSON.stringify(board)
+                    board: JSON.stringify(board),
+                    session_id: sessionID
                   }
                 }
               )
@@ -303,17 +337,19 @@ export default function Board({ WB }: { WB: boolean }) {
 
   return (
     <div className="w-full h-full flex justify-center items-center">
-      <div className='flex justify-center items-center relative'>
-        <div className='absolute -left-36 h-1/3'>
-          <div className='bg-blue-200/65 text-center my-5 py-1 rounded-lg text-white'> <p className={`${WB ? 'text-black' : 'text-white'} font-bold`}> {WB ? "Black" : "White"} </p> </div>
-          <div className='text-center text-white w-28 h-1/2 border-white/75 border-1 rounded-md'>
-            <h3 className='text-lg my-1 mx-2 border-b-0.5 border-white/45 font-extrabold'> Log </h3>
-            <p className='text-sm my-2 px-1 text-red-400' dangerouslySetInnerHTML={{ __html: msg }}></p>
+      <div className="flex flex-col justify-center items-center relative">
+        <canvas ref={canvasRef} onClick={handleCanvasClick} className="mt-10 xl:mt-0"></canvas>
+        <div className="info-panel xl:absolute xl:-left-36 xl:top-auto top-full mt-4 xl:mt-0">
+          <div className="cur-p max-xl:w-1/3 bg-blue-200/65 text-center my-5 py-1 rounded-lg text-white">
+            <p className={`${WB ? 'text-black' : 'text-white'} font-bold text-center`}>{WB ? "Black" : "White"}</p>
           </div>
-          <button onClick={() => nav('/')} className='newfont text-lg text-white text-center w-28 my-8 py-3 bg-red-300/95 border-2 border-red-300/85 rounded-lg hover:bg-red-400 hover:border-red-500/55'> Return to Main </button>
+          <div className="max-xl:w-1/4 text-center text-white w-28 h-1/2 border-white/75 border-1 rounded-md">
+            <h3 className="text-lg my-1 mx-2 border-b-0.5 border-white/45 font-extrabold">Log</h3>
+            <p className="text-sm my-2 max-xl:h-16 xl:h-28 px-1 text-red-400" dangerouslySetInnerHTML={{ __html: msg }}></p>
+          </div>
+          <button onClick={() => nav('/')} className="max-xl:w-1/4 newfont max-xl:text-sm xl:text-lg text-white text-center w-28 my-8 py-3 bg-red-300/95 border-2 border-red-300/85 rounded-lg hover:bg-red-400 hover:border-red-500/55">Return to Main</button>
         </div>
-        <canvas ref={canvasRef} onClick={handleCanvasClick}></canvas>
       </div>
     </div>
-  )
+  );
 }

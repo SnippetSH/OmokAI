@@ -2,13 +2,21 @@ import numpy as np
 from tensorflow.keras.models import model_from_json
 import json
 
-def predict_move(board, model):
+def predict_move(board, model, session_id, session_predictions):
     board = json.loads(board)
 
     input_data = np.expand_dims(board, axis=(0, -1)).astype(np.float32)
     output = model.predict(input_data).squeeze()
     output = output.reshape((15, 15))
+
+    previous_predictions = session_predictions.get(session_id, [])
+    for (y, x) in previous_predictions:
+        output[y, x] = -float('inf')
+
     output_y, output_x = np.unravel_index(np.argmax(output), output.shape)
+
+    previous_predictions.append((output_y, output_x))
+    session_predictions[session_id] = previous_predictions
     
     return output_x, output_y
 
