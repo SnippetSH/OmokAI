@@ -20,14 +20,14 @@ export default function Main({ setWB }: { setWB: (x: boolean) => void }) {
         </button>
       </div>
       <h1 className="text-center text-4xl text-white w-1/5 my-10 px-3 py-3 border-2 border-gray-300/35 rounded-xl newfont"> OMOK </h1>
-      <div className="mb-5 w-1/6 flex justify-center text-xl bg-gray-400/30 text-nowrap text-white rounded-lg">
-        <p className="text-black px-2 font-bold">흑</p>
-        <p className="text-black">/</p>
-        <p className="text-white px-2 font-bold">백</p>
+      <div className="mb-5 w-1/6 flex justify-center text-xl bg-gray-400/30 text-nowrap text-white rounded-lg items-center">
+        <p className="text-black p-2 pb-1 yangfont text-center">흑</p>
+        <p className="text-black py-2 pb-1 yangfont text-center">/</p>
+        <p className="text-white p-2 pb-1 yangfont text-center">백</p>
       </div>
       <div>
-        <button onClick={() => NavAndsetWB(true)} className="text-white m-5 p-5 bg-black/70 w-24 h-24 rounded-full text-lg">흑</button>
-        <button onClick={() => NavAndsetWB(false)} className="text-black m-5 p-5 bg-white/90 w-24 h-24 rounded-full text-lg">백</button>
+        <button onClick={() => NavAndsetWB(true)} className="text-white m-5 p-5 pb-4 bg-black/70 w-24 h-24 rounded-full text-xl yangfont">흑</button>
+        <button onClick={() => NavAndsetWB(false)} className="text-black m-5 p-5 pb-4 bg-white/90 w-24 h-24 rounded-full text-xl yangfont">백</button>
       </div>
     </div>
   )

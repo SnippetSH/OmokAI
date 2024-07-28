@@ -7,6 +7,39 @@
     src: url('./assets/SuperSunday.ttf') format('truetype');
 }
 
+@font-face {
+    font-family: 'CUTE';
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2207-01@1.0/RixInooAriDuriR.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'oneMo';
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2105_2@1.0/ONE-Mobile-POP.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'yang';
+    src: url('https://fastly.jsdelivr.net/gh/supernovice-lab/font@0.9/yangjin.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
 .newfont {
     font-family: 'SuperSunday';
+}
+
+.cutefont {
+    font-family: 'CUTE';
+}
+
+.onefont {
+    font-family: 'oneMo';
+}
+
+.yangfont {
+    font-family: 'yang';
 }

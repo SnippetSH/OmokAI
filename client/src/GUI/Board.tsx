@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { checkBanPut } from '../API/omokCheckAPI';
+import { is33, is44, isWin } from '../API/CurCheckAPI';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import '../index.css';
@@ -21,7 +21,7 @@ export default function Board({ WB }: { WB: boolean }) {
   const nav = useNavigate();
   useEffect(() => {
     if (win !== null) {
-      console.log("win");
+      //console.log("win");
       setMsg(`${win} is Win!<br/>The board will be clear.`);
 
       setTimeout(() => {
@@ -83,14 +83,14 @@ export default function Board({ WB }: { WB: boolean }) {
       setCanvTag(canv);
       setGameSize(canv.width - canv_mg * 2);
     } else {
-      console.log('Some Error is Defined')
+      //console.log('Some Error is Defined')
     }
   }, []);
 
   useEffect(() => {
     async function TMPFunc() {
       try {
-        console.log("get 요청")
+        //console.log("get 요청")
         const res = await axios.get('/api/ai-move',
           {
             params: {
@@ -98,10 +98,10 @@ export default function Board({ WB }: { WB: boolean }) {
             }
           }
         )
-        console.log(res.data);
+        //console.log(res.data);
         AIMoveHandle(res.data.output_x, res.data.output_y)
       } catch (e) {
-        console.log("Error fetching AI move:", e)
+        //console.log("Error fetching AI move:", e)
       }
     }
 
@@ -131,7 +131,7 @@ export default function Board({ WB }: { WB: boolean }) {
   const [msg, setMsg] = useState('');
 
   const handleCanvasClick = async (e: React.MouseEvent<HTMLCanvasElement>) => {
-    if (canvTag) {
+    if (canvTag && isBlackTurn == WB) { // dev 모드 아니면 && isBlackTurn == WB 추가
       const rect = canvTag.getBoundingClientRect();
       const ctx = canvTag.getContext('2d') as CanvasRenderingContext2D;
       const offsetX = e.clientX - rect.left;
@@ -161,36 +161,49 @@ export default function Board({ WB }: { WB: boolean }) {
       if (x > boardSize) x = boardSize;
       if (y > boardSize) y = boardSize;
 
-      console.log("x:", x, "\ny:", y);
-      const tmpBoard = [...board];
+      //console.log("x:", x, "\ny:", y);
+      //console.log(board[y][x])
+      const tmpBoard = board.map(v => [...v]);
       if (tmpBoard[y][x] === 0) {
         tmpBoard[y][x] = isBlackTurn ? 1 : -1;
 
-        let result = checkBanPut(x, y, tmpBoard, isBlackTurn);
-        if (result === false) {
-          console.log("거기 안 됑.")
-          setMsg(`(${x}, ${y}) is Invaild`)
-          return;
-        }
+        let resultWin = isWin(x, y, tmpBoard, isBlackTurn);
+        let result33 = is33(x, y, tmpBoard, isBlackTurn ? "Black" : "White");
+        let result44 = is44(x, y, tmpBoard, isBlackTurn ? "Black" : "White");
+        if (resultWin) {
+          setIsBlackTurn(!isBlackTurn);
+          setBoard(tmpBoard);
+          drawStone(ctx, x, y);
 
-        setIsBlackTurn(!isBlackTurn);
-        setBoard(tmpBoard);
-        drawStone(ctx, x, y);
-
-        if (result === true) {
           setTimeout(() => { setWin(isBlackTurn ? "Black" : "White"); }, 0);
+        } else {
+          if (result33 && result44) {
+            setIsBlackTurn(!isBlackTurn);
+            setBoard(tmpBoard);
+            drawStone(ctx, x, y);
+          } else {
+            if (!result33) {
+              setMsg(`(${x}, ${y}) is Invaild, It is 33`);
+            } else if (!result44) {
+              setMsg(`(${x}, ${y}) is Invaild, It is 44`);
+            }
+          }
         }
+
+        // if (result === true) {
+        //   setTimeout(() => { setWin(isBlackTurn ? "Black" : "White"); }, 0);
+        // }
       }
     }
   };
 
   useEffect(() => {
-    console.log(isBlackTurn);
+    //console.log(isBlackTurn);
     async function getAIMove() {
       if (WB && !isBlackTurn) {
-        console.log(JSON.stringify(board));
+        //console.log(JSON.stringify(board));
         try {
-          console.log("get 요청")
+          //console.log("get 요청")
           const res = await axios.get('/api/ai-move',
             {
               params: {
@@ -198,15 +211,15 @@ export default function Board({ WB }: { WB: boolean }) {
               }
             }
           )
-          console.log(res.data);
+          //console.log(res.data);
           AIMoveHandle(res.data.output_x, res.data.output_y)
         } catch (e) {
-          console.log("Error fetching AI move:", e)
+          //console.log("Error fetching AI move:", e)
         }
       } else if (!WB && isBlackTurn) {
-        console.log(JSON.stringify(board));
+        //console.log(JSON.stringify(board));
         try {
-          console.log("get 요청")
+          //console.log("get 요청")
           const res = await axios.get('/api/ai-move',
             {
               params: {
@@ -214,10 +227,10 @@ export default function Board({ WB }: { WB: boolean }) {
               }
             }
           )
-          console.log(res.data);
+          //console.log(res.data);
           AIMoveHandle(res.data.output_x, res.data.output_y)
         } catch (e) {
-          console.log("Error fetching AI move:", e)
+          //console.log("Error fetching AI move:", e)
         }
       }
     }
@@ -240,39 +253,43 @@ export default function Board({ WB }: { WB: boolean }) {
     }
   }, [isBlackTurn])
 
-  const AIMoveHandle = async (_x: number, _y: number) => {
-    const tmpBoard = [...board];
+  const AIMoveHandle = async (x: number, y: number) => {
+    const tmpBoard = board.map(v => [...v]);
 
     if (canvTag && isBlackTurn !== WB) {
       const ctx = canvTag.getContext('2d') as CanvasRenderingContext2D;
-      if (tmpBoard[_y][_x] === 0) {
-        tmpBoard[_y][_x] = isBlackTurn ? 1 : -1;
+      if (tmpBoard[y][x] === 0) {
+        tmpBoard[y][x] = isBlackTurn ? 1 : -1;
 
-        let result = checkBanPut(_x, _y, tmpBoard, isBlackTurn);
-        if (result === false) {
-          try {
-            console.log("get 다시 요청")
-            const res = await axios.get('/api/ai-move',
-              {
-                params: {
-                  board: JSON.stringify(tmpBoard)
-                }
-              }
-            )
-            console.log(res.data);
-
-            AIMoveHandle(Number(res.data["output_x"]), Number(res.data["output_y"]))
-          } catch (e) {
-            console.log("Error fetching AI move:", e)
-          }
-        } else {
-          drawStone(ctx, _x, _y);
-          setBoard(tmpBoard);
+        let resultWin = isWin(x, y, tmpBoard, isBlackTurn);
+        let result33 = is33(x, y, tmpBoard, isBlackTurn ? "Black" : "White");
+        let result44 = is44(x, y, tmpBoard, isBlackTurn ? "Black" : "White");
+        if (resultWin) {
           setIsBlackTurn(!isBlackTurn);
+          setBoard(tmpBoard);
+          drawStone(ctx, x, y);
 
-
-          if (result === true) {
-            setTimeout(() => { setWin(isBlackTurn ? "Black" : "White"); }, 0);
+          setTimeout(() => { setWin(isBlackTurn ? "Black" : "White"); }, 0);
+        } else {
+          if (result33 && result44) {
+            setIsBlackTurn(!isBlackTurn);
+            setBoard(tmpBoard);
+            drawStone(ctx, x, y);
+          } else {
+            try {
+              //console.log("get 다시 요청")
+              const res = await axios.get('/api/ai-move',
+                {
+                  params: {
+                    board: JSON.stringify(board)
+                  }
+                }
+              )
+              //console.log(res.data);
+              AIMoveHandle(res.data.output_x, res.data.output_y)
+            } catch (e) {
+              //console.log("Error fetching AI move:", e)
+            }
           }
         }
       }
