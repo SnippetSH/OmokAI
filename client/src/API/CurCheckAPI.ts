@@ -290,6 +290,7 @@ const is33 = (_x: number, _y: number, board: number[][], isBlack: TurnMap<boolea
     }
 
     if ((hor3 ? 1 : 0) + (ver3 ? 1 : 0) + (downDia3 ? 1 : 0) + (upDia3 ? 1 : 0) >= 2) {
+        console.log(hor3, ver3, downDia3, upDia3)
         return false;
     }
 
@@ -539,6 +540,7 @@ const is44 = (_x: number, _y: number, board: number[][], isBlack: TurnMap<boolea
     }
 
     if ((hor4 ? 1 : 0) + (ver4 ? 1 : 0) + (downDia4 ? 1 : 0) + (upDia4 ? 1 : 0) >= 2) {
+        console.log(hor4, ver4, downDia4, upDia4)
         return false;
     }
 

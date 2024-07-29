@@ -7,7 +7,7 @@ import '../index.css';
 
 type Stone = "Black" | "White" | null;
 
-export default function Board({ WB }: { WB: boolean }) {
+export default function Board({ WB, diff }: { WB: boolean, diff: boolean }) {
   const boardSize = 15;
   const canv_mg = 20;
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -92,6 +92,7 @@ export default function Board({ WB }: { WB: boolean }) {
   }
 
   useEffect(() => {
+    console.log("diff is", diff);
     let canv: HTMLCanvasElement;
     setWin(null);
     if (canvasRef.current) {
@@ -120,7 +121,8 @@ export default function Board({ WB }: { WB: boolean }) {
           {
             params: {
               board: JSON.stringify(board),
-              session_id: sessionID
+              session_id: sessionID,
+              diff: diff
             }
           }
         )
@@ -239,7 +241,8 @@ export default function Board({ WB }: { WB: boolean }) {
             {
               params: {
                 board: JSON.stringify(board),
-                session_id: sessionID
+                session_id: sessionID,
+                diff: diff
               }
             }
           )
@@ -256,7 +259,8 @@ export default function Board({ WB }: { WB: boolean }) {
             {
               params: {
                 board: JSON.stringify(board),
-                session_id: sessionID
+                session_id: sessionID,
+                diff: diff
               }
             }
           )
@@ -315,7 +319,8 @@ export default function Board({ WB }: { WB: boolean }) {
                 {
                   params: {
                     board: JSON.stringify(board),
-                    session_id: sessionID
+                    session_id: sessionID,
+                    diff: diff
                   }
                 }
               )

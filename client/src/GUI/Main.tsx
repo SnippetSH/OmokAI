@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import github from '../assets/github_logo.png';
 import '../index.css';
 
-export default function Main({ setWB }: { setWB: (x: boolean) => void }) {
+export default function Main({ setWB, setDiff }: { setWB: (x: boolean) => void, setDiff: (x: boolean) => void }) {
   const navigate = useNavigate();
   const [warning, setWarning] = useState(false);
   const NavAndsetWB = (x: boolean) => {
@@ -26,13 +26,21 @@ export default function Main({ setWB }: { setWB: (x: boolean) => void }) {
             <p className='text-xs text-center mt-3 onefont s-text-stroke text-pretty'>화면 크기에 따른 버그 제보의 경우, gccs457@naver.com으로 제보해주세요.</p>
           </div> : null
       }
-      <div className="absolute top-3 right-5">
-        <button>
+      <div className="absolute top-3 right-5 flex flex-col h-1/2 items-center justify-center">
+        <button className="h-1/2 flex items-start">
           <a className="flex items-center" href="https://github.com/SnippetSH/OmokAI.git">
             <img src={github} width={'40px'} className="rounded-full mx-3"/>
             <h1 className="text-2xl pt-1 text-white text-center newfont"> SnippetSH.io </h1>
           </a>
         </button>
+        <div className="h-1/2 flex flex-col justify-start items-center">
+          <button onClick={() => setDiff(true) } className="text-white p-10">
+            78%
+          </button>
+          <button onClick={() => setDiff(false)} className="text-white p-10">
+            64%
+          </button>
+        </div>
       </div>
       <h1 className="text-center text-4xl text-white w-1/5 my-10 px-3 py-3 border-2 border-gray-300/35 rounded-xl newfont"> OMOK </h1>
       <div className="mb-5 w-1/6 flex justify-center text-xl bg-gray-400/30 text-nowrap text-white rounded-lg items-center">

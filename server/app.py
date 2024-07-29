@@ -22,6 +22,17 @@ loaded_model.compile(
     metrics=['acc']
     )
 
+with open("./models/cur_best.json", "r") as json_file:
+    hard_model_json = json_file.read()
+
+hard_model = model_from_json(hard_model_json)
+hard_model.load_weights("./models/Cur_best.h5")
+hard_model.compile(
+    optimizer='adam', 
+    loss='binary_crossentropy',
+    metrics=['acc']
+    )
+
 @app.route('/', methods=['GET'])
 def root():
     return send_from_directory(app.static_folder, 'index.html')
@@ -39,11 +50,17 @@ def static_proxy(path):
 def CalAI():
     board = request.args.get('board')
     session_id = request.args.get('session_id')
+    diff = request.args.get('diff')
     print(board)
     print("\n\n\n\n", session_id)
     if not board or not session_id:
         return jsonify({'error': 'No board or session ID provided'}), 404
-    x, y = predict_move(board, loaded_model, session_id, session_predictions)
+    
+    print(type(diff))
+    if(diff == "true"):
+        x, y = predict_move(board, hard_model, session_id, session_predictions)
+    else:
+        x, y = predict_move(board, loaded_model, session_id, session_predictions)
     return jsonify({'output_x': int(x), 'output_y': int(y), 'success': True})
 
 
