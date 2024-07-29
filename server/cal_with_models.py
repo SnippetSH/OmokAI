@@ -6,6 +6,7 @@ def predict_move(board, model, session_id, session_predictions):
     board = json.loads(board)
 
     input_data = np.expand_dims(board, axis=(0, -1)).astype(np.float32)
+    #print("바봉", input_data)
     output = model.predict(input_data).squeeze()
     output = output.reshape((15, 15))
 
@@ -17,6 +18,11 @@ def predict_move(board, model, session_id, session_predictions):
 
     previous_predictions.append((output_y, output_x))
     session_predictions[session_id] = previous_predictions
+
+    if board[7][7] == 0 and len(previous_predictions) == 1:
+        previous_predictions.pop()
+        previous_predictions.append((7, 7))
+        return 7, 7
     
     return output_x, output_y
 

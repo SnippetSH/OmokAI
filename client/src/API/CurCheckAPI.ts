@@ -33,6 +33,7 @@ const is33 = (_x: number, _y: number, board: number[][], isBlack: TurnMap<boolea
         //막혔냐?
         let isBreak = false;
 
+        let blankCnt = 0;
         //우측
         for (let i = 1; i < 15; i++) {
             x += 1;
@@ -46,11 +47,17 @@ const is33 = (_x: number, _y: number, board: number[][], isBlack: TurnMap<boolea
                         break;
                     }
                 } else if (board[y][x] === 0) {
+                    blankCnt += 1;
                     if (isValid(x - 1, y) && board[y][x - 1] === 0) {
+                        break;
+                    }
+                    if (blankCnt === 2) {
                         break;
                     }
                 } else if (isValid(_x + 1, y) && board[y][_x + 1] === -1) {
                     isBreak = true;
+                    break;
+                } else if (board[y][x] === -1 && rightCnt === 0) {
                     break;
                 }
             }
@@ -58,6 +65,7 @@ const is33 = (_x: number, _y: number, board: number[][], isBlack: TurnMap<boolea
 
         //좌측
         x = _x
+        blankCnt = 0;
         for (let i = 1; i < 15; i++) {
             x -= 1;
             if (isValid(x, y)) {
@@ -70,11 +78,17 @@ const is33 = (_x: number, _y: number, board: number[][], isBlack: TurnMap<boolea
                         break;
                     }
                 } else if (board[y][x] === 0) {
+                    blankCnt += 1;
                     if (isValid(x + 1, y) && board[y][x + 1] === 0) {
+                        break;
+                    }
+                    if (blankCnt === 2) {
                         break;
                     }
                 } else if (isValid(_x - 1, y) && board[y][_x - 1] === -1) {
                     isBreak = true;
+                    break;
+                } else if (board[y][x] === -1 && leftCnt === 0) {
                     break;
                 }
             }
@@ -98,6 +112,7 @@ const is33 = (_x: number, _y: number, board: number[][], isBlack: TurnMap<boolea
         //막혔냐?
         let isBreak = false;
 
+        let blankCnt = 0;
         //아래
         for (let i = 1; i < 15; i++) {
             y += 1;
@@ -111,11 +126,17 @@ const is33 = (_x: number, _y: number, board: number[][], isBlack: TurnMap<boolea
                         break;
                     }
                 } else if (board[y][x] === 0) {
+                    blankCnt += 1;
                     if (isValid(x, y - 1) && board[y - 1][x] === 0) {
+                        break;
+                    }
+                    if (blankCnt === 2) {
                         break;
                     }
                 } else if (isValid(x, _y + 1) && board[_y + 1][x] === -1) {
                     isBreak = true;
+                    break;
+                } else if (board[y][x] === -1 && downCnt === 0) {
                     break;
                 }
             }
@@ -123,6 +144,7 @@ const is33 = (_x: number, _y: number, board: number[][], isBlack: TurnMap<boolea
 
         //위
         y = _y
+        blankCnt = 0;
         for (let i = 1; i < 15; i++) {
             y -= 1;
             if (isValid(x, y)) {
@@ -135,11 +157,17 @@ const is33 = (_x: number, _y: number, board: number[][], isBlack: TurnMap<boolea
                         break;
                     }
                 } else if (board[y][x] === 0) {
+                    blankCnt += 1;
                     if (isValid(x, y + 1) && board[y + 1][x] === 0) {
+                        break;
+                    }
+                    if (blankCnt === 2) {
                         break;
                     }
                 } else if (isValid(x, _y - 1) && board[_y - 1][x] === -1) {
                     isBreak = true;
+                    break;
+                } else if (board[y][x] === -1 && upCnt === 0) {
                     break;
                 }
             }
@@ -163,6 +191,7 @@ const is33 = (_x: number, _y: number, board: number[][], isBlack: TurnMap<boolea
         //막혔냐?
         let isBreak = false;
 
+        let blankCnt = 0;
         // 오른쪽 아래
         for (let i = 1; i < 15; i++) {
             x += 1;
@@ -177,11 +206,17 @@ const is33 = (_x: number, _y: number, board: number[][], isBlack: TurnMap<boolea
                         break;
                     }
                 } else if (board[y][x] === 0) {
+                    blankCnt += 1;
                     if (isValid(x - 1, y - 1) && board[y - 1][x - 1] === 0) {
+                        break;
+                    }
+                    if (blankCnt === 2) {
                         break;
                     }
                 } else if (isValid(_x + 1, _y + 1) && board[_y + 1][_x + 1] === -1) {
                     isBreak = true;
+                    break;
+                } else if (board[y][x] === -1 && rightDownCnt === 0) {
                     break;
                 }
             }
@@ -190,6 +225,7 @@ const is33 = (_x: number, _y: number, board: number[][], isBlack: TurnMap<boolea
         // 왼쪽 위
         x = _x
         y = _y
+        blankCnt = 0;
         for (let i = 1; i < 15; i++) {
             x -= 1;
             y -= 1;
@@ -203,11 +239,17 @@ const is33 = (_x: number, _y: number, board: number[][], isBlack: TurnMap<boolea
                         break;
                     }
                 } else if (board[y][x] === 0) {
+                    blankCnt += 1;
                     if (isValid(x + 1, y + 1) && board[y + 1][x + 1] === 0) {
+                        break;
+                    }
+                    if (blankCnt === 2) {
                         break;
                     }
                 } else if (isValid(_x - 1, _y - 1) && board[_y - 1][_x - 1] === -1) {
                     isBreak = true;
+                    break;
+                } else if (board[y][x] === -1 && leftUpCnt === 0) {
                     break;
                 }
             }
@@ -231,6 +273,7 @@ const is33 = (_x: number, _y: number, board: number[][], isBlack: TurnMap<boolea
         //막혔냐?
         let isBreak = false;
 
+        let blankCnt = 0;
         //오른쪽 위
         for (let i = 1; i < 15; i++) {
             x += 1;
@@ -245,11 +288,17 @@ const is33 = (_x: number, _y: number, board: number[][], isBlack: TurnMap<boolea
                         break;
                     }
                 } else if (board[y][x] === 0) {
+                    blankCnt += 1;
                     if (isValid(x - 1, y + 1) && board[y + 1][x - 1] === 0) {
+                        break;
+                    }
+                    if (blankCnt === 2) {
                         break;
                     }
                 } else if (isValid(_x + 1, _y - 1) && board[_y - 1][_x + 1] === -1) {
                     isBreak = true;
+                    break;
+                } else if (board[y][x] === -1 && rightUpCnt === 0) {
                     break;
                 }
             }
@@ -258,6 +307,7 @@ const is33 = (_x: number, _y: number, board: number[][], isBlack: TurnMap<boolea
         //왼쪽 아래
         x = _x
         y = _y
+        blankCnt = 0;
         for (let i = 1; i < 15; i++) {
             x -= 1;
             y += 1;
@@ -271,11 +321,17 @@ const is33 = (_x: number, _y: number, board: number[][], isBlack: TurnMap<boolea
                         break;
                     }
                 } else if (board[y][x] === 0) {
+                    blankCnt += 1;
                     if (isValid(x + 1, y - 1) && board[y - 1][x + 1] === 0) {
+                        break;
+                    }
+                    if (blankCnt === 2) {
                         break;
                     }
                 } else if (isValid(_x - 1, _y + 1) && board[_y + 1][_x - 1] === -1) {
                     isBreak = true;
+                    break;
+                } else if (board[y][x] === -1 && leftDownCnt === 0) {
                     break;
                 }
             }
@@ -308,59 +364,107 @@ const is44 = (_x: number, _y: number, board: number[][], isBlack: TurnMap<boolea
     let downDia4 = false;
     let upDia4 = false;
 
+    /** 44는 막힌 4인지, 완전 뚫린 4인지에 대한 판별이 필요함.
+     *  막힌 4의 조건: 한쪽 끝이 board 바깥이거나, -1이면서 동시에 닫힌 4일 경우. 0 1 1 1 1: o, 1 0 1 1 1: x
+     *  또한, 막힌 갯수가 1개이어야만 함.
+     * 
+     *  단, 열린 4의 경우에는 그 어떤 경우에 대해서도 막힌 4로 생각하지 않음.
+     * 
+     *  따라서, 고려해야되는 것: 
+     *  흑돌 사이에 낀 빈 공간의 갯수
+     *  빈 공간이 2개 이상일 경우에는 그 어떤 경우에도 4로 판별하지 않음
+     *  빈 공간이 0개일 경우는 막힌 4의 첫번째 조건을 만족시킴.
+     *  빈 공간이 1개이고, 흑의 갯수가 정확히 5개일 경우에는 열린 4로 판별
+     *  
+     *  빈 공간이 0개일 때
+     *   - 흑돌 바로 다음에 나오는 흰돌(보드 밖)의 갯수 세기 (1개 : 막힌 4, 2개: 완전히 막힌 4, 0개: 4로 판별하지 않음)
+     *  빈 공간이 1개일 때
+     *   - 빈 공간 카운트 1 증가
+     *  빈 공간이 2개일 때
+     *   - 바로 탈출
+     * 
+     *  필요한 카운트 변수
+     *  한쪽 방향 검은돌 (ex, 오른쪽, 왼쪽 각각) - 2
+     *  양쪽 흰돌 - 1 (바로 이전 돌이 검은색일 경우 cnt 1)
+     *  한쪽 방향 빈칸 (다음 방향 탐색 전 초기화 필요, 얜 빈칸 만나면 무조건 + 1) - 1
+     *  양쪽 빈칸 - 1 (빈칸의 양쪽이 모두 검은돌일 경우에만 + 1)
+     */
+
     {
         // 가로
         let x = _x;
         let y = _y;
         let rightCnt = 0;
         let leftCnt = 0;
-
+        let blankCnt = 0;
+        let totalBlankCnt = 0;
+        let totalWhiteCnt = 0;
         //우측
         for (let i = 1; i < SIZE; i++) {
             x += 1;
             if (isValid(x, y)) {
                 if (board[y][x] === 1) {
                     rightCnt += 1;
-                    //console.log("rightCnt:", x, y)
-                    if ((isValid(x + 1, y) && board[y][x + 1] === -1) || !isValid(x + 1, y)) {
-                        break;
-                    } else if (board[y][x] === 0) {
-                        if (isValid(x - 1, y) && board[y][x - 1] === 0) {
-                            break;
-                        }
-                    } else if (isValid(_x + 1, y) && board[y][_x + 1] === -1) {
+                } else if (board[y][x] === 0) {
+                    blankCnt += 1;
+                    if (isValid(x + 1, y) && isValid(x - 1, y) && board[y][x + 1] === 1 && board[y][x - 1] === 1) {
+                        totalBlankCnt += 1;
+                    }
+                    if(blankCnt === 2) {
                         break;
                     }
+                } else if (board[y][x] === -1) {
+                    if (isValid(x - 1, y) && board[y][x - 1] === 1) {
+                        totalWhiteCnt += 1;
+                    }
+                    break;
                 }
+            } else { // board 밖일 경우
+                if (isValid(x - 1, y) && board[y][x - 1] === 1) {
+                    totalWhiteCnt += 1;
+                }
+                break;
             }
         }
 
-        x = _x
         //좌측
+        x = _x
+        blankCnt = 0;
         for (let i = 1; i < SIZE; i++) {
             x -= 1;
             if (isValid(x, y)) {
                 if (board[y][x] === 1) {
                     leftCnt += 1;
-                    //console.log("leftCnt:", x, y)
-                    if ((isValid(x - 1, y) && board[y][x - 1] === -1) || !isValid(x - 1, y)) {
-                        break;
-                    } else if (board[y][x] === 0) {
-                        if (isValid(x + 1, y) && board[y][x + 1] === 0) {
-                            break;
-                        }
-                    } else if (isValid(_x - 1, y) && board[y][_x - 1] === -1) {
+                } else if (board[y][x] === 0) {
+                    blankCnt += 1;
+                    if (isValid(x + 1, y) && isValid(x - 1, y) && board[y][x + 1] === 1 && board[y][x - 1] === 1) {
+                        totalBlankCnt += 1;
+                    }
+                    if(blankCnt === 2) {
                         break;
                     }
+                } else if (board[y][x] === -1) {
+                    if (isValid(x + 1, y) && board[y][x + 1] === 1) {
+                        totalWhiteCnt += 1;
+                    }
+                    break;
                 }
+            } else { // board 밖일 경우
+                if (isValid(x + 1, y) && board[y][x + 1] === 1) {
+                    totalWhiteCnt += 1;
+                }
+                break;
             }
         }
 
+
         //console.log(rightCnt, leftCnt);
         let is = board[_y][_x] === 1 ? 1 : 0;
-        if (rightCnt + leftCnt + is === 4) {
-            hor4 = true;
-            //console.log("가로 4됨");
+        if ((totalBlankCnt === 1) || (totalWhiteCnt === 1 && totalBlankCnt === 0)) {
+            if (rightCnt + leftCnt + is === 4) {
+                hor4 = true;
+                //console.log("가로 4됨");
+            }
         }
     }
 
@@ -370,6 +474,9 @@ const is44 = (_x: number, _y: number, board: number[][], isBlack: TurnMap<boolea
         let y = _y;
         let downCnt = 0;
         let upCnt = 0;
+        let blankCnt = 0;
+        let totalBlankCnt = 0;
+        let totalWhiteCnt = 0;
 
         //아래
         for (let i = 1; i < SIZE; i++) {
@@ -377,46 +484,64 @@ const is44 = (_x: number, _y: number, board: number[][], isBlack: TurnMap<boolea
             if (isValid(x, y)) {
                 if (board[y][x] === 1) {
                     downCnt += 1;
-                    //console.log("downCnt:", x, y)
-                    if ((isValid(x, y + 1) && board[y + 1][x] === -1) || !isValid(x, y + 1)) {
-                        break;
-                    } else if (board[y][x] === 0) {
-                        if (isValid(x, y - 1) && board[y - 1][x] === 0) {
-                            break;
-                        }
-                    } else if (isValid(_x, _y + 1) && board[_y + 1][_x] === -1) {
+                } else if (board[y][x] === 0) {
+                    blankCnt += 1;
+                    if (isValid(x, y + 1) && isValid(x, y - 1) && board[y + 1][x] === 1 && board[y - 1][x] === 1) {
+                        totalBlankCnt += 1;
+                    }
+                    if(blankCnt === 2) {
                         break;
                     }
+                } else if (board[y][x] === -1) {
+                    if (isValid(x, y - 1) && board[y - 1][x] === 1) {
+                        totalWhiteCnt += 1;
+                    }
+                    break;
                 }
+            } else { // board 밖일 경우
+                if (isValid(x, y - 1) && board[y - 1][x] === 1) {
+                    totalWhiteCnt += 1;
+                }
+                break;
             }
         }
 
         //위
         y = _y;
+        blankCnt = 0;
         for (let i = 1; i < SIZE; i++) {
             y -= 1;
             if (isValid(x, y)) {
                 if (board[y][x] === 1) {
                     upCnt += 1;
-                    //console.log("upCnt:", x, y)
-                    if ((isValid(x, y - 1) && board[y - 1][x] === -1) || !isValid(x, y - 1)) {
-                        break;
-                    } else if (board[y][x] === 0) {
-                        if (isValid(x, y + 1) && board[y + 1][x] === 0) {
-                            break;
-                        }
-                    } else if (isValid(_x, _y - 1) && board[_y - 1][_x] === -1) {
+                } else if (board[y][x] === 0) {
+                    blankCnt += 1;
+                    if (isValid(x, y + 1) && isValid(x, y - 1) && board[y + 1][x] === 1 && board[y - 1][x] === 1) {
+                        totalBlankCnt += 1;
+                    }
+                    if(blankCnt === 2) {
                         break;
                     }
+                } else if (board[y][x] === -1) {
+                    if (isValid(x, y + 1) && board[y + 1][x] === 1) {
+                        totalWhiteCnt += 1;
+                    }
+                    break;
                 }
+            } else { // board 밖일 경우
+                if (isValid(x, y + 1) && board[y + 1][x] === 1) {
+                    totalWhiteCnt += 1;
+                }
+                break;
             }
         }
 
         //console.log(downCnt, upCnt);
         let is = board[_y][_x] === 1 ? 1 : 0;
-        if (downCnt + upCnt + is === 4) {
-            ver4 = true;
-            //console.log("세로 4됨");
+        if ((totalBlankCnt === 1) || (totalWhiteCnt === 1 && totalBlankCnt === 0)) {
+            if (downCnt + upCnt + is === 4) {
+                //console.log("세로 4됨");
+            }
         }
     }
 
@@ -426,57 +551,79 @@ const is44 = (_x: number, _y: number, board: number[][], isBlack: TurnMap<boolea
         let y = _y; //+1 
         let rightDownCnt = 0;
         let leftUpCnt = 0;
+        let blankCnt = 0;
+        let totalBlankCnt = 0;
+        let totalWhiteCnt = 0;
 
         // 오른쪽 아래
-        for (let i = 1; i < 15; i++) {
+        for (let i = 1; i < SIZE; i++) {
             x += 1;
             y += 1;
             if (isValid(x, y)) {
                 if (board[y][x] === 1) {
                     rightDownCnt += 1;
-                    //console.log("rightDownCnt:", x, y)
-                    if ((isValid(x + 1, y + 1) && board[y + 1][x + 1] === -1) || !isValid(x + 1, y + 1)) {
-                        break;
-                    }
                 } else if (board[y][x] === 0) {
-                    if (isValid(x - 1, y - 1) && board[y - 1][x - 1] === 0) {
+                    blankCnt += 1;
+                    if (isValid(x + 1, y + 1) && isValid(x - 1, y - 1) && board[y + 1][x + 1] === 1 && board[y - 1][x - 1] === 1) {
+                        totalBlankCnt += 1;
+                    }
+                    if(blankCnt === 2) {
                         break;
                     }
-                } else if (isValid(_x + 1, _y + 1) && board[_y + 1][_x + 1] === -1) {
+                } else if (board[y][x] === -1) {
+                    if (isValid(x - 1, y - 1) && board[y - 1][x - 1] === 1) {
+                        totalWhiteCnt += 1;
+                    }
                     break;
                 }
+            } else { // board 밖일 경우
+                if (isValid(x - 1, y - 1) && board[y - 1][x - 1] === 1) {
+                    totalWhiteCnt += 1;
+                }
+                break;
             }
         }
 
         // 왼쪽 위
         x = _x;
         y = _y;
-
-        for (let i = 1; i < 15; i++) {
+        blankCnt = 0;
+        for (let i = 1; i < SIZE; i++) {
             x -= 1;
             y -= 1;
             if (isValid(x, y)) {
                 if (board[y][x] === 1) {
                     leftUpCnt += 1;
-                    //console.log("leftUpCnt:", x, y)
-                    if ((isValid(x - 1, y - 1) && board[y - 1][x - 1] === -1) || !isValid(x - 1, y - 1)) {
-                        break;
-                    }
                 } else if (board[y][x] === 0) {
-                    if (isValid(x + 1, y + 1) && board[y + 1][x + 1] === 0) {
+                    blankCnt += 1;
+                    if (isValid(x + 1, y + 1) && isValid(x - 1, y - 1) && board[y + 1][x + 1] === 1 && board[y - 1][x - 1] === 1) {
+                        totalBlankCnt += 1;
+                    }
+                    if(blankCnt === 2) {
                         break;
                     }
-                } else if (isValid(_x - 1, _y - 1) && board[_y - 1][_x - 1] === -1) {
+                } else if (board[y][x] === -1) {
+                    if (isValid(x + 1, y + 1) && board[y + 1][x + 1] === 1) {
+                        totalWhiteCnt += 1;
+                    }
                     break;
                 }
+            } else { // board 밖일 경우
+                if (isValid(x + 1, y + 1) && board[y + 1][x + 1] === 1) {
+                    totalWhiteCnt += 1;
+                }
+                break;
             }
         }
 
+
         //console.log(rightDownCnt, leftUpCnt);
         let is = board[_y][_x] === 1 ? 1 : 0;
-        if (rightDownCnt + leftUpCnt + is === 4) {
-            downDia4 = true;
-            //console.log("오른쪽 아래로 대각선 4 됨");
+        if ((totalBlankCnt === 1) || (totalWhiteCnt === 1 && totalBlankCnt === 0)) {
+            if (rightDownCnt + leftUpCnt + is === 4) {
+                downDia4 = true;
+                //console.log("오른쪽 아래로 대각선 4 됨");
+            }
         }
     }
 
@@ -486,57 +633,80 @@ const is44 = (_x: number, _y: number, board: number[][], isBlack: TurnMap<boolea
         let y = _y; // -1, +1  
         let rightUpCnt = 0;
         let leftDownCnt = 0;
+        let blankCnt = 0;
+        let totalBlankCnt = 0;
+        let totalWhiteCnt = 0;
 
         //오른쪽 위
-        for (let i = 1; i < 15; i++) {
+        for (let i = 1; i < SIZE; i++) {
             x += 1;
             y -= 1;
             if (isValid(x, y)) {
                 if (board[y][x] === 1) {
                     rightUpCnt += 1;
-                    //console.log("rightUpCnt:", x, y)
-                    if ((isValid(x + 1, y - 1) && board[y - 1][x + 1] === -1) || !isValid(x + 1, y - 1)) {
-                        break;
-                    }
                 } else if (board[y][x] === 0) {
-                    if (isValid(x - 1, y + 1) && board[y + 1][x - 1] === 0) {
+                    blankCnt += 1;
+                    if (isValid(x + 1, y - 1) && isValid(x - 1, y + 1) && board[y - 1][x + 1] === 1 && board[y + 1][x - 1] === 1) {
+                        totalBlankCnt += 1;
+                    }
+                    if(blankCnt === 2) {
                         break;
                     }
-                } else if (isValid(_x + 1, _y - 1) && board[_y - 1][_x + 1] === -1) {
+                } else if (board[y][x] === -1) {
+                    if (isValid(x - 1, y + 1) && board[y + 1][x - 1] === 1) {
+                        totalWhiteCnt += 1;
+                    }
                     break;
                 }
+            } else { // board 밖일 경우
+                if (isValid(x - 1, y + 1) && board[y + 1][x - 1] === 1) {
+                    totalWhiteCnt += 1;
+                }
+                break;
             }
         }
 
-        //왼쪽 아래
+        //왼쪽 아래 x: -, y: +
         x = _x
         y = _y
-        for (let i = 1; i < 15; i++) {
+        blankCnt = 0;
+        for (let i = 1; i < SIZE; i++) {
             x -= 1;
             y += 1;
             if (isValid(x, y)) {
                 if (board[y][x] === 1) {
                     leftDownCnt += 1;
-                    //console.log("leftDownCnt:", x, y)
-                    if ((isValid(x - 1, y + 1) && board[y + 1][x - 1] === -1) || !isValid(x - 1, y + 1)) {
-                        break;
-                    }
                 } else if (board[y][x] === 0) {
-                    if (isValid(x + 1, y - 1) && board[y - 1][x + 1] === 0) {
+                    blankCnt += 1;
+                    if (isValid(x + 1, y - 1) && isValid(x - 1, y + 1) && board[y - 1][x + 1] === 1 && board[y + 1][x - 1] === 1) {
+                        totalBlankCnt += 1;
+                    }
+                    if(blankCnt === 2) {
                         break;
                     }
-                } else if (isValid(_x - 1, _y + 1) && board[_y + 1][_x - 1] === -1) {
+                } else if (board[y][x] === -1) {
+                    if (isValid(x + 1, y - 1) && board[y - 1][x + 1] === 1) {
+                        totalWhiteCnt += 1;
+                    }
                     break;
                 }
+            } else { // board 밖일 경우
+                if (isValid(x + 1, y - 1) && board[y - 1][x + 1] === 1) {
+                    totalWhiteCnt += 1;
+                }
+                break;
             }
         }
 
+
         //console.log(rightUpCnt, leftDownCnt);
         let is = board[_y][_x] === 1 ? 1 : 0;
-        if (rightUpCnt + leftDownCnt + is === 4) {
-            //console.log("오른쪽 위로 대각선 4 됨");
-            upDia4 = true;
-        }
+        if((totalBlankCnt === 1) || (totalWhiteCnt === 1 && totalBlankCnt === 0)) {
+            if (rightUpCnt + leftDownCnt + is === 4) {
+                //console.log("오른쪽 위로 대각선 4 됨");
+                upDia4 = true;
+            }
+        }   
     }
 
     if ((hor4 ? 1 : 0) + (ver4 ? 1 : 0) + (downDia4 ? 1 : 0) + (upDia4 ? 1 : 0) >= 2) {
@@ -561,12 +731,12 @@ const isWin = (_x: number, _y: number, board: number[][], isBlack: boolean): boo
     let curPosCnt = board[_y][_x] === curTurn ? 1 : 0
     let cnt1 = 0;
     let cnt2 = 0;
-    for(let i = 0; i < 8; i++) {
+    for (let i = 0; i < 8; i++) {
         let x = _x;
         let y = _y;
 
-        while(isValid(x, y) && board[y][x] === curTurn) {
-            if(i%2 === 0) {
+        while (isValid(x, y) && board[y][x] === curTurn) {
+            if (i % 2 === 0) {
                 cnt1 += 1;
             } else {
                 cnt2 += 1;
@@ -576,17 +746,17 @@ const isWin = (_x: number, _y: number, board: number[][], isBlack: boolean): boo
             y += dy[i];
         }
 
-        if(-curPosCnt + cnt1 + cnt2 === 5 || (curTurn === -1 && -curPosCnt + cnt1 + cnt2 === 6)) {
+        if (-curPosCnt + cnt1 + cnt2 === 5 || (curTurn === -1 && -curPosCnt + cnt1 + cnt2 === 6)) {
             win = true;
             break;
         }
-        if(i%2 === 1) {
+        if (i % 2 === 1) {
             cnt1 = 0;
             cnt2 = 0;
         }
     }
 
-    if(win) {
+    if (win) {
         return true;
     }
     return false;

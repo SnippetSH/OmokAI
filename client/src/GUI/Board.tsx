@@ -7,7 +7,7 @@ import '../index.css';
 
 type Stone = "Black" | "White" | null;
 
-export default function Board({ WB, diff }: { WB: boolean, diff: boolean }) {
+export default function Board({ WB, diff }: { WB: boolean, diff: number }) {
   const boardSize = 15;
   const canv_mg = 20;
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -32,7 +32,7 @@ export default function Board({ WB, diff }: { WB: boolean, diff: boolean }) {
         })
         .catch(e => {
           console.log("Error ending session:", e);
-        }) 
+        })
     }
   }, [sessionID]);
 
@@ -97,10 +97,10 @@ export default function Board({ WB, diff }: { WB: boolean, diff: boolean }) {
     setWin(null);
     if (canvasRef.current) {
       canv = canvasRef.current;
-      if(window.innerWidth > 1280) {
+      if (window.innerWidth > 1280) {
         canv.width = window.innerWidth * 0.5;
       } else {
-        if(window.innerWidth > window.innerHeight) {
+        if (window.innerWidth > window.innerHeight) {
           canv.width = window.innerHeight * 0.8;
         }
         canv.width = window.innerWidth * 0.8;
@@ -159,7 +159,7 @@ export default function Board({ WB, diff }: { WB: boolean, diff: boolean }) {
   const [msg, setMsg] = useState('');
 
   const handleCanvasClick = async (e: React.MouseEvent<HTMLCanvasElement>) => {
-    if (canvTag && isBlackTurn == WB) { // dev 모드 아니면 && isBlackTurn == WB 추가
+    if (canvTag) { // dev 모드 아니면 && isBlackTurn == WB 추가
       const rect = canvTag.getBoundingClientRect();
       const ctx = canvTag.getContext('2d') as CanvasRenderingContext2D;
       const offsetX = e.clientX - rect.left;
@@ -189,9 +189,9 @@ export default function Board({ WB, diff }: { WB: boolean, diff: boolean }) {
       if (x > boardSize) x = boardSize;
       if (y > boardSize) y = boardSize;
 
-      if(window.innerWidth <= 751) {
-        x-=1;
-        y-=1;
+      if (window.innerWidth <= 751) {
+        x -= 1;
+        y -= 1;
       }
 
       //console.log("x:", x, "\ny:", y);
@@ -233,41 +233,45 @@ export default function Board({ WB, diff }: { WB: boolean, diff: boolean }) {
   useEffect(() => {
     //console.log(isBlackTurn);
     async function getAIMove() {
-      if (WB && !isBlackTurn) {
-        //console.log(JSON.stringify(board));
-        try {
-          //console.log("get 요청")
-          const res = await axios.get('/api/ai-move',
-            {
-              params: {
-                board: JSON.stringify(board),
-                session_id: sessionID,
-                diff: diff
+      if (win === null) {
+
+
+        if (WB && !isBlackTurn) {
+          //console.log(JSON.stringify(board));
+          try {
+            //console.log("get 요청")
+            const res = await axios.get('/api/ai-move',
+              {
+                params: {
+                  board: JSON.stringify(board),
+                  session_id: sessionID,
+                  diff: diff
+                }
               }
-            }
-          )
-          //console.log(res.data);
-          AIMoveHandle(res.data.output_x, res.data.output_y)
-        } catch (e) {
-          //console.log("Error fetching AI move:", e)
-        }
-      } else if (!WB && isBlackTurn) {
-        //console.log(JSON.stringify(board));
-        try {
-          //console.log("get 요청")
-          const res = await axios.get('/api/ai-move',
-            {
-              params: {
-                board: JSON.stringify(board),
-                session_id: sessionID,
-                diff: diff
+            )
+            //console.log(res.data);
+            AIMoveHandle(res.data.output_x, res.data.output_y)
+          } catch (e) {
+            //console.log("Error fetching AI move:", e)
+          }
+        } else if (!WB && isBlackTurn) {
+          //console.log(JSON.stringify(board));
+          try {
+            //console.log("get 요청")
+            const res = await axios.get('/api/ai-move',
+              {
+                params: {
+                  board: JSON.stringify(board),
+                  session_id: sessionID,
+                  diff: diff
+                }
               }
-            }
-          )
-          //console.log(res.data);
-          AIMoveHandle(res.data.output_x, res.data.output_y)
-        } catch (e) {
-          //console.log("Error fetching AI move:", e)
+            )
+            //console.log(res.data);
+            AIMoveHandle(res.data.output_x, res.data.output_y)
+          } catch (e) {
+            //console.log("Error fetching AI move:", e)
+          }
         }
       }
     }

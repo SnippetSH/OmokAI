@@ -1,8 +1,9 @@
-from flask import Flask, send_from_directory, request, jsonify
+from flask import Flask, send_from_directory, request, jsonify, redirect
 from cal_with_models import predict_move
 import os
 import numpy as np
-from tensorflow.keras.models import load_model, model_from_json
+from tensorflow.keras.models import model_from_json
+from manage_user import Make_User, Load_User, Login
 
 app = Flask(__name__, static_folder='dist', static_url_path='')
 host_addr = "0.0.0.0"
@@ -33,9 +34,25 @@ hard_model.compile(
     metrics=['acc']
     )
 
+with open("./models/model_optional.json") as json_file:
+    option = json_file.read()
+
+option_model = model_from_json(option)
+option_model.load_weights("./models/model_optional_learned.h5")
+option_model.compile(
+    optimizer='adam', 
+    loss='binary_crossentropy',
+    metrics=['acc']
+    )
+
 @app.route('/', methods=['GET'])
 def root():
     return send_from_directory(app.static_folder, 'index.html')
+
+@app.route('/board')
+def board():
+    # '/board'로 요청이 오면 '/'로 리디렉션
+    return redirect('/')
 
 @app.route('/<path:path>', methods=['GET'])
 def static_proxy(path):
@@ -57,10 +74,15 @@ def CalAI():
         return jsonify({'error': 'No board or session ID provided'}), 404
     
     print(type(diff))
-    if(diff == "true"):
+    if(diff == "0"):
+        print("별 2개")
         x, y = predict_move(board, hard_model, session_id, session_predictions)
-    else:
+    elif diff == "1":
+        print("별 1개")
         x, y = predict_move(board, loaded_model, session_id, session_predictions)
+    else:
+        print("별 3개")
+        x, y = predict_move(board, option_model, session_id, session_predictions)
     return jsonify({'output_x': int(x), 'output_y': int(y), 'success': True})
 
 
@@ -71,6 +93,28 @@ def reset_session():
         del session_predictions[session_id]
     return jsonify({'success': True})
 
+@app.route('/api/signup', methods=["POST"])
+def sign_up():
+    name = request.json.get('name')
+    id = request.json.get('id')
+    password = request.json.get('password')
+
+    if Load_User(name):
+        Make_User(id, password, name)
+        return jsonify({'isSuc': 'Success', 'name': name})
+    else:
+        return jsonify({'isSuc': 'Failed', 'name': name})
+    
+@app.route('/api/signin', methods=['GET'])
+def sign_in():
+    id = request.args.get('id')
+    password = request.args.get('password')
+
+    s, k = Login(id, password)
+    if s:
+        return jsonify({'isSuc': 'Success', 'name': k})
+    else:
+        return jsonify({'isSuc': 'Failed', 'name': k})
 
 @app.errorhandler(404)
 def page_not_found(e):
