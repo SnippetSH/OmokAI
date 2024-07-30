@@ -4,6 +4,7 @@ import { Routes, Route } from 'react-router-dom'
 import { useState } from 'react'
 import Board from './GUI/Board'
 import Login from './GUI/Login'
+import List from './GUI/List'
 
 type Login = false | string
 
@@ -31,6 +32,7 @@ function App() {
         <Route path='/' element={<Main setWB={setBlackorWhite} setDiff={setDiff} diff={diff} isLogin={isLogin} />} />
         <Route path='/board' element={<Board WB={WB} diff={diff} />} />
         <Route path='/login' element={<Login setLogin={handleLogin} />} />
+        <Route path='/list' element={<List isLogin={isLogin ? isLogin : ''}/> } />
       </Routes>
     </div>
   )

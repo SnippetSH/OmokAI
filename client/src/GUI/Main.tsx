@@ -42,11 +42,16 @@ export default function Main({ setWB, setDiff, diff, isLogin }: { isLogin: Login
   return (
     <div className="w-full h-full flex flex-col justify-center items-center relative">
       {
-        isLogin ? <div className='absolute top-5 left-5 text-white text-xl p-0.5 text-center newfont'> {isLogin} </div> : <div className='absolute top-5 left-5'>
-          <button onClick={handleLogin} className='p-2 bg-button-indigo/75 rounded-xl border-1 border-button-border-indigo hover:bg-button-indigo/95'>
-            <p className='text-white text-xl p-0.5 text-center newfont'> Sign In </p>
-          </button>
-        </div>
+        isLogin ?
+          <div className='absolute top-5 left-5 text-white text-xl p-0.5 text-center newfont'> 
+            {isLogin} 
+            <button onClick={() => navigate('/list')} className="mx-3 text-white text-sm text-center newfont p-1.5 bg-button-indigo/75 rounded-xl border-1 border-button-border-indigo hover:bg-button-indigo/95">History</button>
+          </div> :
+          <div className='absolute top-5 left-5'>
+            <button onClick={handleLogin} className='p-2 bg-button-indigo/75 rounded-xl border-1 border-button-border-indigo hover:bg-button-indigo/95'>
+              <p className='text-white text-xl p-0.5 text-center newfont'> Sign In </p>
+            </button>
+          </div>
       }
 
       {
