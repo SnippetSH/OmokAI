@@ -3,8 +3,6 @@ from cal_with_models import predict_move
 import os
 import numpy as np
 from tensorflow.keras.models import model_from_json
-from manage_user import Make_User, Load_User, Login
-from manage_board import save_board, load_board
 
 app = Flask(__name__, static_folder='dist', static_url_path='')
 host_addr = "0.0.0.0"
@@ -93,50 +91,6 @@ def reset_session():
     if session_id in session_predictions:
         del session_predictions[session_id]
     return jsonify({'success': True})
-
-@app.route('/api/signup', methods=["POST"])
-def sign_up():
-    name = request.json.get('name')
-    id = request.json.get('id')
-    password = request.json.get('password')
-
-    if Load_User(name):
-        Make_User(id, password, name)
-        return jsonify({'isSuc': 'Success', 'name': name})
-    else:
-        return jsonify({'isSuc': 'Failed', 'name': name})
-    
-@app.route('/api/signin', methods=['GET'])
-def sign_in():
-    id = request.args.get('id')
-    password = request.args.get('password')
-
-    s, k = Login(id, password)
-    if s:
-        return jsonify({'isSuc': 'Success', 'name': k})
-    else:
-        return jsonify({'isSuc': 'Failed', 'name': k})
-    
-@app.route('/api/post-board', methods=['POST'])
-def save():
-    name = request.json.get('name')
-    board = request.json.get('board')
-
-    if name and board:
-        save_board(name, board)
-        return jsonify({'isSuc': True, 'name': name})
-    else:
-        return jsonify({'isSuc': False, 'name': name})
-    
-@app.route('/api/get-board', methods=['GET'])
-def load():
-    name = request.args.get('name')
-
-    x, v = load_board(name)
-    if x:
-        return jsonify({'isSuc': True, "board": v})
-    else:
-        return jsonify({'isSuc': False, "board": []})
 
 @app.errorhandler(404)
 def page_not_found(e):

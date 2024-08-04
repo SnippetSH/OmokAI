@@ -3,9 +3,7 @@ import { useState, useEffect, useRef } from "react";
 import github from '../assets/github_logo.png';
 import '../index.css';
 
-type Login = false | string
-
-export default function Main({ setWB, setDiff, diff, isLogin }: { isLogin: Login, setWB: (x: boolean) => void, setDiff: (x: number) => void, diff: number }) {
+export default function Main({ setWB, setDiff, diff }: { setWB: (x: boolean) => void, setDiff: (x: number) => void, diff: number }) {
   const navigate = useNavigate();
   const [warning, setWarning] = useState(false);
   const NavAndsetWB = (x: boolean) => {
@@ -35,25 +33,8 @@ export default function Main({ setWB, setDiff, diff, isLogin }: { isLogin: Login
     return () => window.removeEventListener('resize', handleResize);
   }, [])
 
-  const handleLogin = () => {
-    navigate('/login')
-  }
-
   return (
     <div className="w-full h-full flex flex-col justify-center items-center relative">
-      {
-        isLogin ?
-          <div className='absolute top-5 left-5 text-white text-xl p-0.5 text-center newfont'> 
-            {isLogin} 
-            <button onClick={() => navigate('/list')} className="mx-3 text-white text-sm text-center newfont p-1.5 bg-button-indigo/75 rounded-xl border-1 border-button-border-indigo hover:bg-button-indigo/95">History</button>
-          </div> :
-          <div className='absolute top-5 left-5'>
-            <button onClick={handleLogin} className='p-2 bg-button-indigo/75 rounded-xl border-1 border-button-border-indigo hover:bg-button-indigo/95'>
-              <p className='text-white text-xl p-0.5 text-center newfont'> Sign In </p>
-            </button>
-          </div>
-      }
-
       {
         warning ?
           <div className='text-white absolute top-24 left-1/2 transform -translate-x-1/2 above-450:w-1/3 under-450:w-1/2 bg-red-300/75 p-2 rounded-lg'>

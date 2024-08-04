@@ -19,6 +19,7 @@ export default function Board({ WB, diff }: { WB: boolean, diff: number }) {
   ); // 1: black, 0: none, -1: white
   const [win, setWin] = useState<Stone>(null);
   const [sessionID] = useState(uuidv4());
+  const [stoneNumber, setStoneNumber] = useState(1);
 
   useEffect(() => {
     console.log("Your session ID:", sessionID);
@@ -40,11 +41,7 @@ export default function Board({ WB, diff }: { WB: boolean, diff: number }) {
   useEffect(() => {
     if (win !== null) {
       //console.log("win");
-      setMsg(`${win} is Win!<br/>The board will be clear.`);
-
-      setTimeout(() => {
-        nav('/');
-      }, 2000)
+      setMsg(`${win} is Win!`);
     }
   }, [win]);
 
@@ -66,6 +63,13 @@ export default function Board({ WB, diff }: { WB: boolean, diff: number }) {
     }
 
     ctx.fill();
+
+    ctx.fillStyle = isBlackTurn ? '#FFF' : '#000';
+    ctx.font = `${stone_size / 2.2}px 'oneMo`;
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+
+    ctx.fillText(stoneNumber.toString(), x, y+2);
   };
 
   const drawBoard = (canv: HTMLCanvasElement) => {
@@ -159,7 +163,7 @@ export default function Board({ WB, diff }: { WB: boolean, diff: number }) {
   const [msg, setMsg] = useState('');
 
   const handleCanvasClick = async (e: React.MouseEvent<HTMLCanvasElement>) => {
-    if (canvTag) { // dev 모드 아니면 && isBlackTurn == WB 추가
+    if (canvTag && win === null) { // dev 모드 아니면 && isBlackTurn == WB 추가
       const rect = canvTag.getBoundingClientRect();
       const ctx = canvTag.getContext('2d') as CanvasRenderingContext2D;
       const offsetX = e.clientX - rect.left;
@@ -212,6 +216,7 @@ export default function Board({ WB, diff }: { WB: boolean, diff: number }) {
         } else {
           if (result33 && result44) {
             setIsBlackTurn(!isBlackTurn);
+            setStoneNumber(stoneNumber + 1);
             setBoard(tmpBoard);
             drawStone(ctx, x, y);
           } else {
@@ -231,6 +236,7 @@ export default function Board({ WB, diff }: { WB: boolean, diff: number }) {
   };
 
   useEffect(() => {
+    
     //console.log(isBlackTurn);
     async function getAIMove() {
       if (win === null) {
@@ -316,6 +322,7 @@ export default function Board({ WB, diff }: { WB: boolean, diff: number }) {
             setIsBlackTurn(!isBlackTurn);
             setBoard(tmpBoard);
             drawStone(ctx, x, y);
+            setStoneNumber(stoneNumber + 1);
           } else {
             try {
               //console.log("get 다시 요청")
