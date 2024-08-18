@@ -163,7 +163,7 @@ export default function Board({ WB, diff }: { WB: boolean, diff: number }) {
   const [msg, setMsg] = useState('');
 
   const handleCanvasClick = async (e: React.MouseEvent<HTMLCanvasElement>) => {
-    if (canvTag && win === null) { // dev 모드 아니면 && isBlackTurn == WB 추가
+    if (canvTag && win === null && isBlackTurn == WB) { // dev 모드 아니면 && isBlackTurn == WB 추가
       const rect = canvTag.getBoundingClientRect();
       const ctx = canvTag.getContext('2d') as CanvasRenderingContext2D;
       const offsetX = e.clientX - rect.left;
