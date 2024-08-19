@@ -56,7 +56,8 @@
     .info-panel {
         top: auto;
         left: auto;
-        margin-top: 1rem; /* canvas 아래 여백 조절 */
+        margin-top: 1rem;
+        /* canvas 아래 여백 조절 */
         display: flex;
         flex-direction: row;
         justify-content: space-between;
@@ -70,6 +71,33 @@
     }
 
     canvas {
-        margin-top: 1rem; /* 필요에 따라 조정 */
+        margin-top: 1rem;
+        /* 필요에 따라 조정 */
+    }
+}
+
+@media (max-width: 450px) {
+    .under-450\:text-sm {
+        font-size: 0.875rem !important;
+        line-height: 1.25rem !important;
+    }
+}
+
+@media (max-width: 519px) {
+    .under-519\:text-base {
+        font-size: 1rem;
+        line-height: 1.5rem;
+    }
+}
+
+@media (max-height: 740px) {
+    .underh-740\:text-sm {
+        font-size: 0.875rem !important;
+        line-height: 1.25rem !important;
+    }
+
+    .underh-740\:text-xs {
+        font-size: 0.75rem !important;
+        line-height: 1rem !important;
     }
 }

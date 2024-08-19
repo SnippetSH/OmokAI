@@ -49,8 +49,14 @@ export default function Board({ WB, diff }: { WB: boolean, diff: number }) {
     ctx.beginPath();
     const stone_size = (game_size / (boardSize - 1));
     // 돌 그릴 좌표에 판 여백 좌표 만큼 더하는 처리들
+    
     var x = _x * stone_size + canv_mg;
     var y = _y * stone_size + canv_mg;
+
+    if(window.innerWidth < 400) {
+      x = _x * stone_size + 15;
+      y = _y * stone_size + 15;
+    }
 
     ctx.arc(x, y, stone_size / 2, 0, Math.PI * 2);
     ctx.closePath();
@@ -69,7 +75,11 @@ export default function Board({ WB, diff }: { WB: boolean, diff: number }) {
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
 
-    ctx.fillText(stoneNumber.toString(), x, y+2);
+    if(window.innerWidth > 400) {
+      ctx.fillText(stoneNumber.toString(), x, y + 2);
+    } else {
+      ctx.fillText(stoneNumber.toString(), x, y + 0.7);
+    }
   };
 
   const drawBoard = (canv: HTMLCanvasElement) => {
@@ -82,11 +92,26 @@ export default function Board({ WB, diff }: { WB: boolean, diff: number }) {
       ctx.fillRect(0, 0, canv.width, canv.height);
       ctx.strokeStyle = '#000';
 
-      for (let x = canv_mg; x <= canv.width - canv_mg * 2; x += (game_size / (boardSize - 1))) {
-        for (let y = canv_mg; y <= canv.width - canv_mg * 2; y += (game_size / (boardSize - 1))) {
-          ctx.strokeRect(x, y, ((canv.width - canv_mg) / (boardSize - 1)), ((canv.width - canv_mg) / (boardSize - 1)));
+      console.log(canv.width, canv.height, canv_mg);
+      console.log(game_size);
+      console.log((game_size / (boardSize - 1)));
+
+      if (window.innerWidth > 400) {
+        const offset = canv_mg;
+        for (let x = offset; x < canv.width - offset * 2; x += (game_size / (boardSize - 1))) {
+          for (let y = offset; y < canv.width - offset * 2; y += (game_size / (boardSize - 1))) {
+            ctx.strokeRect(x, y, ((canv.width - offset) / (boardSize - 1)), ((canv.width - offset) / (boardSize - 1)));
+          }
+        }
+      } else {
+        const offset = 15;
+        for (let x = offset; x < canv.width - offset * 2; x += (game_size / (boardSize - 1))) {
+          for (let y = offset; y < canv.width - offset * 2; y += (game_size / (boardSize - 1))) {
+            ctx.strokeRect(x, y, ((canv.width - offset) / (boardSize - 1)), ((canv.width - offset) / (boardSize - 1)));
+          }
         }
       }
+
 
       ctx.beginPath();
       ctx.closePath();
@@ -103,19 +128,26 @@ export default function Board({ WB, diff }: { WB: boolean, diff: number }) {
       canv = canvasRef.current;
       if (window.innerWidth > 1280) {
         canv.width = window.innerWidth * 0.5;
-      } else {
+      } else if (window.innerWidth > 400) {
         if (window.innerWidth > window.innerHeight) {
           canv.width = window.innerHeight * 0.8;
+        } else {
+          canv.width = window.innerWidth * 0.8;
         }
-        canv.width = window.innerWidth * 0.8;
+      } else {
+        canv.width = window.innerWidth * 0.78;
       }
       canv.height = canv.width;
       setCanvTag(canv);
-      setGameSize(canv.width - canv_mg * 2);
+      if (window.innerWidth > 400) {
+        setGameSize(canv.width - canv_mg * 2);
+      } else {
+        setGameSize(canv.width - 30);
+      }
     } else {
       //console.log('Some Error is Defined')
     }
-  }, []);
+  }, [window.innerWidth]);
 
   useEffect(() => {
     async function TMPFunc() {
@@ -158,7 +190,7 @@ export default function Board({ WB, diff }: { WB: boolean, diff: number }) {
         }
       }
     }
-  }, [canvTag, game_size]);
+  }, [canvTag, game_size, canv_mg]);
 
   const [msg, setMsg] = useState('');
 
@@ -236,7 +268,7 @@ export default function Board({ WB, diff }: { WB: boolean, diff: number }) {
   };
 
   useEffect(() => {
-    
+
     //console.log(isBlackTurn);
     async function getAIMove() {
       if (win === null) {

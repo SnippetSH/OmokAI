@@ -57,8 +57,12 @@ export default {
       'max-xl': {'max': '1279px'},
       'max-2xl': {'max': '1535px'},
       'above-450': "450px",
+      'above-460': "460px",
+      'above-1024': "1024px",
       'under-450': {'max': '450px'},
-      'under-350': {'max': '375px'}
+      'under-390': {'max': '390px'},
+      'under-519': {'max': '519px'},
+      'under-1023': {'max': '1023px'}
     }
   },
   plugins: [],
