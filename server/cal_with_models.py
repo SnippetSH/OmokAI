@@ -5,16 +5,53 @@ import json
 def predict_move(board, model, session_id, session_predictions):
     board = json.loads(board)
 
+    isFirst = False
+    tmp_cnt = 0
+    white_cnt = 0
+    target_x, target_y = 0, 0
+    for i in range(15):
+        for j in range(15):
+            if int(board[i][j]) == 1:
+                tmp_cnt += 1
+                target_x = j
+                target_y = i
+            elif int(board[i][j]) == -1:
+                white_cnt += 1
+
+    if tmp_cnt == 1 and white_cnt == 0:
+        isFirst = True
+
     input_data = np.expand_dims(board, axis=(0, -1)).astype(np.float32)
-    #print("바봉", input_data)
     output = model.predict(input_data).squeeze()
     output = output.reshape((15, 15))
 
     previous_predictions = session_predictions.get(session_id, [])
     for (y, x) in previous_predictions:
-        output[y, x] = -float('inf')
+        output[y, x] -= 1e3
 
-    output_y, output_x = np.unravel_index(np.argmax(output), output.shape)
+    if isFirst:
+        move = [(-1, -1), (0, -1), (1, -1), (-1, 0), (1, 0), (-1, 1), (0, 1), (1, 1)]
+        r = np.random.randint(0, 8)
+        if target_y == 7 and target_x == 7:
+            return target_x + move[r][0], target_y + move[r][1]
+        else:
+            return 7, 7
+
+    tmp_board = np.array(board).reshape((15, 15))
+    mask = (tmp_board == 0)
+
+    output = output * mask
+
+    mod_output = np.array([arr[:] for arr in output])
+
+    nonzero = np.count_nonzero(tmp_board)
+    
+    if nonzero < 5:
+        print("nonzero count", nonzero)
+        mod_output[[0, 1, 2, 3, 4, 10, 11, 12, 13, 14], :] -= 1e-7
+        mod_output[:, [0, 1, 2, 3, 4, 10, 11, 12, 13, 14]] -= 1e-7
+
+    output_y, output_x = np.unravel_index(np.argmax(mod_output), mod_output.shape)
 
     previous_predictions.append((output_y, output_x))
     session_predictions[session_id] = previous_predictions
@@ -25,6 +62,7 @@ def predict_move(board, model, session_id, session_predictions):
         return 7, 7
     
     return output_x, output_y
+
 
 if __name__ == "__main__":
     # JSON 파일에서 모델 구조 로드

@@ -3,6 +3,7 @@ from cal_with_models import predict_move
 import os
 import numpy as np
 from tensorflow.keras.models import model_from_json
+from tensorflow.keras import layers, models
 
 app = Flask(__name__, static_folder='dist', static_url_path='')
 host_addr = "0.0.0.0"
@@ -44,6 +45,20 @@ option_model.compile(
     metrics=['acc']
     )
 
+with open(os.path.join("models", "default.json"), "r") as f:
+    model_layer = f.read()
+    
+model = models.model_from_json(model_layer)
+model.load_weights(os.path.join("models", "new.h5"))
+model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['acc'])
+
+with open(os.path.join("models", "default.json"), "r") as f:
+    model_layer = f.read()
+    
+model = models.model_from_json(model_layer)
+model.load_weights(os.path.join("models", "new1.h5"))
+model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['acc'])
+
 @app.route('/', methods=['GET'])
 def root():
     return send_from_directory(app.static_folder, 'index.html')
@@ -78,10 +93,12 @@ def CalAI():
         x, y = predict_move(board, hard_model, session_id, session_predictions)
     elif diff == "1":
         print("별 1개")
-        x, y = predict_move(board, loaded_model, session_id, session_predictions)
+        x, y = predict_move(board, model, session_id, session_predictions)
     else:
         print("별 3개")
         x, y = predict_move(board, option_model, session_id, session_predictions)
+
+    print(f"x:{x}, y:{y}")
     return jsonify({'output_x': int(x), 'output_y': int(y), 'success': True})
 
 
