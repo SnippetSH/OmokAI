@@ -1,56 +1,29 @@
 from flask import Flask, send_from_directory, request, jsonify, redirect
 from cal_with_models import predict_move
+from new_predict import predict
 import os
 import numpy as np
-from tensorflow.keras.models import model_from_json
-from tensorflow.keras import layers, models
+from keras.models import model_from_json
+from keras import models
 
 app = Flask(__name__, static_folder='dist', static_url_path='')
 host_addr = "0.0.0.0"
 host_port = 5000
 session_predictions = {}
 
-# 입력 데이터를 4차원으로 변환하고 예측 수행
-with open("./models/model.json", "r") as json_file:
-    loaded_model_json = json_file.read()
-
-# HDF5 파일에서 가중치 로드
-loaded_model = model_from_json(loaded_model_json)
-loaded_model.load_weights("./models/model_weights.h5")
-loaded_model.compile(
-    optimizer='adam', 
-    loss='binary_crossentropy',
-    metrics=['acc']
-    )
-
 with open("./models/cur_best.json", "r") as json_file:
     hard_model_json = json_file.read()
 
 hard_model = model_from_json(hard_model_json)
 hard_model.load_weights("./models/Cur_best.h5")
-hard_model.compile(
-    optimizer='adam', 
-    loss='binary_crossentropy',
-    metrics=['acc']
-    )
+hard_model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['acc'])
 
 with open("./models/model_optional.json") as json_file:
     option = json_file.read()
 
 option_model = model_from_json(option)
 option_model.load_weights("./models/model_optional_learned.h5")
-option_model.compile(
-    optimizer='adam', 
-    loss='binary_crossentropy',
-    metrics=['acc']
-    )
-
-with open(os.path.join("models", "default.json"), "r") as f:
-    model_layer = f.read()
-    
-model = models.model_from_json(model_layer)
-model.load_weights(os.path.join("models", "new.h5"))
-model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['acc'])
+option_model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['acc'])
 
 with open(os.path.join("models", "default.json"), "r") as f:
     model_layer = f.read()
@@ -58,6 +31,15 @@ with open(os.path.join("models", "default.json"), "r") as f:
 model = models.model_from_json(model_layer)
 model.load_weights(os.path.join("models", "new1.h5"))
 model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['acc'])
+
+
+with open(os.path.join("models", "new_2.json"), "r") as f:
+    model_layer = f.read()
+    
+easy_model = models.model_from_json(model_layer)
+easy_model.load_weights(os.path.join("models", "new2.h5"))
+easy_model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['acc'])
+
 
 @app.route('/', methods=['GET'])
 def root():
@@ -82,21 +64,40 @@ def CalAI():
     board = request.args.get('board')
     session_id = request.args.get('session_id')
     diff = request.args.get('diff')
+    again = request.args.get('again') == 'true'
+    print(again)
     print(board)
     print("\n\n\n\n", session_id)
     if not board or not session_id:
         return jsonify({'error': 'No board or session ID provided'}), 404
+
+    if not again:
+        if session_id in session_predictions:
+            del session_predictions[session_id]
     
     print(type(diff))
+    # if(diff == "0"):
+    #     print("별 2개")
+    #     x, y = predict_move(board, hard_model, session_id, session_predictions)
+    # elif diff == "1":
+    #     print("별 1개")
+    #     x, y = predict_move(board, model, session_id, session_predictions)
+    # else:
+    #     print("별 3개")
+    #     x, y = predict_move(board, option_model, session_id, session_predictions)
+
     if(diff == "0"):
+        print("별 1개")
+        x, y = predict_move(board, easy_model, session_id, session_predictions)
+    elif diff == "1":
         print("별 2개")
         x, y = predict_move(board, hard_model, session_id, session_predictions)
-    elif diff == "1":
-        print("별 1개")
-        x, y = predict_move(board, model, session_id, session_predictions)
-    else:
+    elif diff == "2":
         print("별 3개")
         x, y = predict_move(board, option_model, session_id, session_predictions)
+    else:
+        print("별 4개")
+        x, y = predict(model, easy_model, hard_model, option_model, board, session_id, session_predictions)
 
     print(f"x:{x}, y:{y}")
     return jsonify({'output_x': int(x), 'output_y': int(y), 'success': True})

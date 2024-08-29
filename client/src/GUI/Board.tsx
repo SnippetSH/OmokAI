@@ -27,7 +27,7 @@ export default function Board({ WB, diff }: { WB: boolean, diff: number }) {
     return () => {
       console.log('Ending session ID:', sessionID);
 
-      axios.post('/api/ai-reset', { session_id: sessionID })
+      axios.post('api/ai-reset', { session_id: sessionID })
         .then(res => {
           console.log('Session End:', res.data);
         })
@@ -149,26 +149,30 @@ export default function Board({ WB, diff }: { WB: boolean, diff: number }) {
     }
   }, [window.innerWidth]);
 
-  useEffect(() => {
-    async function TMPFunc() {
-      try {
-        //console.log("get 요청")
-        const res = await axios.get('/api/ai-move',
-          {
-            params: {
-              board: JSON.stringify(board),
-              session_id: sessionID,
-              diff: diff
-            }
-          }
-        )
-        //console.log(res.data);
-        AIMoveHandle(res.data.output_x, res.data.output_y)
-      } catch (e) {
-        //console.log("Error fetching AI move:", e)
-      }
+  const AIMove = async (again: boolean) => {
+    if (win !== null) {
+      return;
     }
+    try {
+      //console.log("get 요청")
+      const res = await axios.get('api/ai-move',
+        {
+          params: {
+            board: JSON.stringify(board),
+            session_id: sessionID,
+            diff: diff,
+            again: again
+          }
+        }
+      )
+      //console.log(res.data);
+      AIMoveHandle(res.data.output_x, res.data.output_y)
+    } catch (e) {
+      //console.log("Error fetching AI move:", e)
+    }
+  }
 
+  useEffect(() => {
     if (canvTag) {
       drawBoard(canvTag);
       if (!WB) {
@@ -186,7 +190,7 @@ export default function Board({ WB, diff }: { WB: boolean, diff: number }) {
         }
 
         if (!tmp) {
-          TMPFunc();
+          AIMove(false);
         }
       }
     }
@@ -195,7 +199,7 @@ export default function Board({ WB, diff }: { WB: boolean, diff: number }) {
   const [msg, setMsg] = useState('');
 
   const handleCanvasClick = async (e: React.MouseEvent<HTMLCanvasElement>) => {
-    if (canvTag && win === null && isBlackTurn == WB) { // dev 모드 아니면 && isBlackTurn == WB 추가
+    if (canvTag && win === null) { // dev 모드 아니면 && isBlackTurn == WB 추가
       const rect = canvTag.getBoundingClientRect();
       const ctx = canvTag.getContext('2d') as CanvasRenderingContext2D;
       const offsetX = e.clientX - rect.left;
@@ -268,52 +272,7 @@ export default function Board({ WB, diff }: { WB: boolean, diff: number }) {
   };
 
   useEffect(() => {
-
     //console.log(isBlackTurn);
-    async function getAIMove() {
-      if (win === null) {
-
-
-        if (WB && !isBlackTurn) {
-          //console.log(JSON.stringify(board));
-          try {
-            //console.log("get 요청")
-            const res = await axios.get('/api/ai-move',
-              {
-                params: {
-                  board: JSON.stringify(board),
-                  session_id: sessionID,
-                  diff: diff
-                }
-              }
-            )
-            //console.log(res.data);
-            AIMoveHandle(res.data.output_x, res.data.output_y)
-          } catch (e) {
-            //console.log("Error fetching AI move:", e)
-          }
-        } else if (!WB && isBlackTurn) {
-          //console.log(JSON.stringify(board));
-          try {
-            //console.log("get 요청")
-            const res = await axios.get('/api/ai-move',
-              {
-                params: {
-                  board: JSON.stringify(board),
-                  session_id: sessionID,
-                  diff: diff
-                }
-              }
-            )
-            //console.log(res.data);
-            AIMoveHandle(res.data.output_x, res.data.output_y)
-          } catch (e) {
-            //console.log("Error fetching AI move:", e)
-          }
-        }
-      }
-    }
-
     let tmp = false;
     for (let i = 0; i < board.length; i++) {
       for (let j = 0; j < board.length; j++) {
@@ -328,7 +287,11 @@ export default function Board({ WB, diff }: { WB: boolean, diff: number }) {
     }
 
     if (tmp) {
-      getAIMove();
+      if(win === null) {
+        if((WB && !isBlackTurn) || (!WB && isBlackTurn)) {
+          AIMove(false)
+        }
+      }
     }
   }, [isBlackTurn])
 
@@ -356,22 +319,7 @@ export default function Board({ WB, diff }: { WB: boolean, diff: number }) {
             drawStone(ctx, x, y);
             setStoneNumber(stoneNumber + 1);
           } else {
-            try {
-              //console.log("get 다시 요청")
-              const res = await axios.get('/api/ai-move',
-                {
-                  params: {
-                    board: JSON.stringify(board),
-                    session_id: sessionID,
-                    diff: diff
-                  }
-                }
-              )
-              //console.log(res.data);
-              AIMoveHandle(res.data.output_x, res.data.output_y)
-            } catch (e) {
-              //console.log("Error fetching AI move:", e)
-            }
+            AIMove(true);
           }
         }
       }

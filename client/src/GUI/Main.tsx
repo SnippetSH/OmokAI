@@ -58,17 +58,20 @@ export default function Main({ setWB, setDiff, diff }: { setWB: (x: boolean) => 
             <h2 className="onefont text-sm font-thin"> (Default: ★★☆) </h2>
           </div>
           <div className="flex above-1024:flex-col under-1023:flex-row justify-center items-center">
-            <button onClick={() => setDiff(1)} ref={difficultyRefs} className="w-3/4 hover:bg-blue-400/80  flex flex-col items-center text-black p-1 py-2 my-2 rounded-xl border-0.5 border-blue-400/75 text-center underh-740:text-sm max-sm:text-sm sm:text-lg bg-blue-300/80">
-              <span className="text-center"> ★☆☆ </span> <span className="yangfont underh-740:text-xs max-sm:text-xs sm:text-sm"> Trained Dataset: 4.3M </span>
-            </button>
             <button onClick={() => setDiff(0)} style={{ 'height': diffHeight }} className="w-3/4 hover:bg-blue-400/80  flex flex-col items-center text-black p-1 py-2 my-2 rounded-xl border-0.5 border-blue-400/75 text-center underh-740:text-sm max-sm:text-sm sm:text-lg bg-blue-300/80">
-              <span className="text-center"> ★★☆ </span> <span className="yangfont underh-740:text-xs max-sm:text-xs sm:text-sm"> Trained Dataset: 5.5M </span>
+              <span className="text-center"> ★☆☆☆ </span> <span className="yangfont underh-740:text-xs max-sm:text-xs py-2 sm:text-sm"> Trained Dataset: 4.3M </span>
+            </button>
+            <button onClick={() => setDiff(1)} style={{ 'height': diffHeight }} className="w-3/4 hover:bg-blue-400/80  flex flex-col items-center text-black p-1 py-2 my-2 rounded-xl border-0.5 border-blue-400/75 text-center underh-740:text-sm max-sm:text-sm sm:text-lg bg-blue-300/80">
+              <span className="text-center"> ★★☆☆ </span> <span className="yangfont underh-740:text-xs max-sm:text-xs py-2 sm:text-sm"> Trained Dataset: 5.5M </span>
             </button>
             <button onClick={() => setDiff(2)} style={{ 'height': diffHeight }} className="w-3/4 hover:bg-blue-400/80  flex flex-col items-center text-black p-1 py-2 my-2 rounded-xl border-0.5 border-blue-400/75 text-center underh-740:text-sm max-sm:text-sm sm:text-lg bg-blue-300/80">
-              <span className="text-center"> ★★★ </span> <span className="yangfont underh-740:text-xs max-sm:text-xs sm:text-sm"> Trained Dataset: 12M </span>
+              <span className="text-center"> ★★★☆ </span> <span className="yangfont underh-740:text-xs max-sm:text-xs py-2 sm:text-sm"> Trained Dataset: 12M </span>
+            </button>
+            <button onClick={() => setDiff(3)} ref={difficultyRefs}  className="w-3/4 hover:bg-blue-400/80  flex flex-col items-center text-black p-1 my-2 rounded-xl border-0.5 border-blue-400/75 text-center underh-740:text-sm max-sm:text-sm sm:text-lg bg-blue-300/80">
+              <span className="text-center"> ★★★★ </span> <span className="yangfont underh-740:text-xs max-sm:text-xs py-1 sm:text-sm"> Trained Dataset: 12M <br/> <sup>More Trained</sup> </span>
             </button>
           </div>
-          <h3 className="onefont text-xs text-white text-center my-1"> Current: {diff === 0 ? "★★☆" : diff === 1 ? "★☆☆" : "★★★"} </h3>
+          <h3 className="onefont text-xs text-white text-center my-1"> Current: {diff === 0 ? "★☆☆☆" : diff === 1 ? "★★☆☆" : diff === 2 ? "★★★☆" : "★★★★"} </h3>
         </div>
       </div>
       
