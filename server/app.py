@@ -95,6 +95,9 @@ def CalAI():
     elif diff == "2":
         print("별 3개")
         x, y = predict_move(board, option_model, session_id, session_predictions)
+    elif diff == "10":
+        print("별 4개")
+        x, y = predict_move(board, model, session_id, session_predictions)
     else:
         print("별 4개")
         x, y = predict(model, easy_model, hard_model, option_model, board, session_id, session_predictions)

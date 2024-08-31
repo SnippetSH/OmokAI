@@ -89,6 +89,7 @@ def predict(model_1, model_2, model_3, model_4, board, session_id, session_predi
     BBBB = (-1, -1)
     X1, Y1, X2, Y2 = -1, -1, -1, -1
     DX, DY = 0, 0
+    three = False
     if isDanger:
         positions = dangerInfo["positions"]
         print("type", dangerInfo["type"])
@@ -118,45 +119,47 @@ def predict(model_1, model_2, model_3, model_4, board, session_id, session_predi
                 return x2 + dx, y2 + dy
             
         elif dangerInfo["type"] == "three":
-            print("여기 3임", positions[0], positions[-1], dx, dy)
-            blank = (-1, -1)
-            for i in range(len(positions) - 1):
-                if max(positions[i + 1][0] - positions[i][0], positions[i + 1][1] - positions[i][1]) > 1:
-                    blank = positions[i]
-                    BBBB = blank
-                    break
+            if board[y1 - dy][x1 - dx] == 0 and board[y2 + dy][x2 + dx] == 0:
+                three = True
+                print("여기 3임", positions[0], positions[-1], dx, dy)
+                blank = (-1, -1)
+                for i in range(len(positions) - 1):
+                    if max(positions[i + 1][0] - positions[i][0], positions[i + 1][1] - positions[i][1]) > 1:
+                        blank = positions[i]
+                        BBBB = blank
+                        break
 
-            if blank != (-1, -1):
-                if board[blank[1] + dy][blank[0] + dx] == 0:
-                    tmp1 = np.max(mod_output2)
-                    tmpXY1 = np.unravel_index(np.argmax(mod_output2), mod_output2.shape)
-                    
-                    mod_output2[tmpXY1[0]][tmpXY1[1]] = -1e5
-                    mod_output2[blank[1] + dy][blank[0] + dx] = tmp1
-                    
-                    if np.random.random() > 0.5:
+                if blank != (-1, -1):
+                    if board[blank[1] + dy][blank[0] + dx] == 0:
+                        tmp1 = np.max(mod_output2)
+                        tmpXY1 = np.unravel_index(np.argmax(mod_output2), mod_output2.shape)
+                        
+                        mod_output2[tmpXY1[0]][tmpXY1[1]] = -1e5
+                        mod_output2[blank[1] + dy][blank[0] + dx] = tmp1
+                        
+                        if np.random.random() > 0.5:
+                            tmp2 = np.max(mod_output3)
+                            tmpXY2 = np.unravel_index(np.argmax(mod_output3), mod_output3.shape)
+                            mod_output3[y2 + dy][x2 + dx] = tmp2
+                            mod_output3[tmpXY2[0]][tmpXY2[1]] = -1e5
+                        else:
+                            tmp2 = np.max(mod_output3)
+                            tmpXY2 = np.unravel_index(np.argmax(mod_output3), mod_output3.shape)
+                            mod_output3[y1 - dy][x1 - dx] = tmp2
+                            mod_output3[tmpXY2[0]][tmpXY2[1]] = -1e5
+                else:
+                    if board[y1 - dy][x1 - dx] == 0:
+                        tmp1 = np.max(mod_output2)
+                        tmpXY1 = np.unravel_index(np.argmax(mod_output2), mod_output2.shape)
+
+                        mod_output2[tmpXY1[0]][tmpXY1[1]] = -1e5
+                        mod_output2[y1 - dy][x1 - dx] = tmp1
+                    if board[y2 + dy][x2 + dx] == 0:
                         tmp2 = np.max(mod_output3)
                         tmpXY2 = np.unravel_index(np.argmax(mod_output3), mod_output3.shape)
+
+                        mod_output3[tmpXY2[0]][tmpXY2[1]] = -1e5
                         mod_output3[y2 + dy][x2 + dx] = tmp2
-                        mod_output3[tmpXY2[0]][tmpXY2[1]] = -1e5
-                    else:
-                        tmp2 = np.max(mod_output3)
-                        tmpXY2 = np.unravel_index(np.argmax(mod_output3), mod_output3.shape)
-                        mod_output3[y1 - dy][x1 - dx] = tmp2
-                        mod_output3[tmpXY2[0]][tmpXY2[1]] = -1e5
-            else:
-                if board[y1 - dy][x1 - dx] == 0:
-                    tmp1 = np.max(mod_output2)
-                    tmpXY1 = np.unravel_index(np.argmax(mod_output2), mod_output2.shape)
-
-                    mod_output2[tmpXY1[0]][tmpXY1[1]] = -1e5
-                    mod_output2[y1 - dy][x1 - dx] = tmp1
-                if board[y2 + dy][x2 + dx] == 0:
-                    tmp2 = np.max(mod_output3)
-                    tmpXY2 = np.unravel_index(np.argmax(mod_output3), mod_output3.shape)
-
-                    mod_output3[tmpXY2[0]][tmpXY2[1]] = -1e5
-                    mod_output3[y2 + dy][x2 + dx] = tmp2
 
     mod_output = remove_nonzero(mod_output, board)
     mod_output1 = remove_nonzero(mod_output1, board)
@@ -172,12 +175,11 @@ def predict(model_1, model_2, model_3, model_4, board, session_id, session_predi
     if len(list(predicts)) > 1:
         y, x = predict_tree(model_1, model_2, model_3, model_4, board, list(predicts))
 
-        if X1 != -1 and Y1 != -1 and X2 != -1 and Y2 != -1:
+        if three:
             directions = [(1, 0), (0, 1), (1, 1), (1, -1), (-1, 0), (0, -1), (-1, -1), (-1, 1)]
             black_cnt = sum(board[i][j] == 1 for i in range(15) for j in range(15))
             white_cnt = sum(board[i][j] == -1 for i in range(15) for j in range(15))
             turn = 1 if black_cnt == white_cnt else -1
-
             
             for dx, dy in directions:
                 count = 1
@@ -185,7 +187,8 @@ def predict(model_1, model_2, model_3, model_4, board, session_id, session_predi
                 
                 b = 0
                 while True:
-                    _x, _y = _x + dx, _y + dy
+                    _x += dx
+                    _y += dy
                     if isValid(_x, _y):
                         if board[_y][_x] == turn:
                             count += 1
@@ -282,6 +285,7 @@ def check_four(board):
             x2, y2 = danger[1]["positions"][-1]
             dx, dy = danger[1]["dx"], danger[1]["dy"]
             
+            print(board[x1 - dx][y1 - dy], board[x2 + dx][y2 + dy])
             if board[x1 - dx][y1 - dy] == 0 and board[x2 + dx][y2 + dy] == 0:
                 new_dangers.append(danger)
 
